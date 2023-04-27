@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./SingUp.css";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../providers/AuthProvider";
 const SingUp = () => {
   const [error, setError] = useState('')
+  const {createUser} = useContext(AuthContext)
   const handleSingUp = (event) => {
     event.preventDefault();
 
@@ -11,6 +13,7 @@ const SingUp = () => {
     const password = form.password.value;
     const confirm = form.confirm.value;
     console.log(email, password, confirm);
+    setError('')
     if(password !== confirm) {
       setError('Your password did not match')
       return
@@ -19,6 +22,15 @@ const SingUp = () => {
       setError('Your password must be at least 6 characters long')
       return
     }
+    createUser(email, password)
+    .then(result => {
+      const loggedUser = result.user;
+      console.log(loggedUser);
+    })
+    .catch(error => {
+      console.log(error);
+      setError(error.message);
+    })
   };
 
   return (
